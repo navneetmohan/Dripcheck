@@ -926,6 +926,565 @@ body {
 }
 
 /* ========================================
+   Header Actions
+   ======================================== */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.header-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.header-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.header-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.premium-btn {
+    width: auto;
+    padding: 0 var(--space-md);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ffd93d 0%, #ff8533 100%);
+    color: #000;
+    border: none;
+}
+
+.premium-btn:hover {
+    box-shadow: 0 4px 20px rgba(255, 217, 61, 0.4);
+}
+
+/* ========================================
+   Roasts Remaining
+   ======================================== */
+
+.roasts-remaining {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    color: var(--accent-success);
+}
+
+.roasts-remaining.limit-reached {
+    background: rgba(255, 77, 77, 0.15);
+    border-color: rgba(255, 77, 77, 0.3);
+    color: var(--accent-error);
+}
+
+.roasts-count {
+    font-weight: 700;
+}
+
+/* ========================================
+   Challenge Banner
+   ======================================== */
+
+.challenge-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-lg);
+    background: linear-gradient(135deg, rgba(255, 217, 61, 0.15) 0%, rgba(255, 133, 51, 0.15) 100%);
+    border: 1px solid rgba(255, 217, 61, 0.3);
+    border-radius: var(--radius-lg);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.challenge-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.challenge-icon {
+    font-size: 1.25rem;
+}
+
+.challenge-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.challenge-join-btn {
+    padding: var(--space-xs) var(--space-md);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--accent-secondary);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.challenge-join-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+}
+
+/* ========================================
+   Modals
+   ======================================== */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 420px;
+    max-height: 80vh;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+}
+
+.modal-body {
+    padding: var(--space-lg);
+    overflow-y: auto;
+}
+
+/* ========================================
+   Leaderboard
+   ======================================== */
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-dark);
+    border-radius: var(--radius-md);
+}
+
+.leaderboard-rank {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: var(--radius-full);
+    background: var(--border-subtle);
+}
+
+.leaderboard-item:nth-child(1) .leaderboard-rank {
+    background: linear-gradient(135deg, #ffd93d, #ff8533);
+    color: #000;
+}
+
+.leaderboard-item:nth-child(2) .leaderboard-rank {
+    background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+    color: #000;
+}
+
+.leaderboard-item:nth-child(3) .leaderboard-rank {
+    background: linear-gradient(135deg, #cd7f32, #a05a20);
+    color: #000;
+}
+
+.leaderboard-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.leaderboard-score {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent-success);
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--text-secondary);
+}
+
+/* ========================================
+   Premium / Products
+   ======================================== */
+
+.premium-intro {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    color: var(--text-secondary);
+}
+
+.products-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.product-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-dark);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+}
+
+.product-card:hover {
+    border-color: var(--accent-primary);
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+.product-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.product-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-xs);
+}
+
+.product-price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent-success);
+}
+
+.buy-btn {
+    padding: var(--space-xs) var(--space-md);
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.buy-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+}
+
+.product-loading,
+.product-error {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--text-secondary);
+}
+
+/* ========================================
+   Challenge Modal
+   ======================================== */
+
+.challenge-details {
+    text-align: center;
+}
+
+.challenge-desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.challenge-participants {
+    font-weight: 600;
+    color: var(--accent-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.challenge-accept-btn {
+    width: 100%;
+    padding: var(--space-md);
+    font-size: 1rem;
+    font-weight: 600;
+    background: var(--gradient-fire);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.challenge-accept-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(255, 77, 77, 0.4);
+}
+
+/* ========================================
+   Share Buttons
+   ======================================== */
+
+.meme-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-sm);
+}
+
+.share-btn.twitter {
+    background: #000;
+    border: 1px solid #333;
+}
+
+.share-btn.twitter:hover {
+    border-color: #fff;
+    background: #1a1a1a;
+}
+
+.share-btn.whatsapp {
+    background: #25D366;
+    border: none;
+}
+
+.share-btn.whatsapp:hover {
+    background: #20bd5a;
+}
+
+/* ========================================
+   AI Outfit Generator
+   ======================================== */
+
+.outfit-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.outfit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.outfit-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+}
+
+.primary-outfit-btn {
+    padding-inline: var(--space-lg);
+    background: var(--gradient-fire);
+    color: var(--text-primary);
+    border: none;
+    box-shadow: 0 4px 18px rgba(255, 77, 77, 0.35);
+}
+
+.primary-outfit-btn:hover {
+    transform: translateY(-1px);
+}
+
+.outfit-content {
+    margin-top: var(--space-xs);
+}
+
+.outfit-loading {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+.outfit-loading.hidden {
+    display: none;
+}
+
+.skeleton-card {
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 0%,
+        rgba(255, 255, 255, 0.12) 20%,
+        rgba(255, 255, 255, 0.04) 40%
+    );
+    background-size: 200% 100%;
+    height: 220px;
+    animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.outfit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+}
+
+.outfit-grid.hidden {
+    display: none;
+}
+
+.outfit-option {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.outfit-image-wrap {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: radial-gradient(circle at top, rgba(255, 77, 77, 0.22), transparent 55%);
+}
+
+.outfit-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.outfit-info {
+    padding: var(--space-md);
+}
+
+.outfit-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-xs);
+}
+
+.outfit-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.outfit-items li {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.2rem;
+}
+
+.outfit-items li::before {
+    content: "•";
+    display: inline-block;
+    margin-right: 0.35rem;
+    color: var(--accent-secondary);
+}
+
+/* ========================================
    Animations
    ======================================== */
 
@@ -986,6 +1545,11 @@ body {
     }
     
     .meme-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .outfit-grid,
+    .outfit-loading {
         grid-template-columns: 1fr;
     }
 }

@@ -1,6 +1,7 @@
 /**
  * Roast or Toast - Frontend Application
  * Handles image upload, API communication, and result display
+ * Includes Growth Features & Monetization
  */
 
 (function() {
@@ -33,10 +34,52 @@
         mistakesList: document.getElementById('mistakesList'),
         memeImage: document.getElementById('memeImage'),
         
+        // Roasts remaining
+        roastsRemaining: document.getElementById('roastsRemaining'),
+        roastsCount: document.getElementById('roastsCount'),
+        
+        // Outfit generator elements
+        outfitCard: document.getElementById('outfitCard'),
+        generateOutfitsBtn: document.getElementById('generateOutfitsBtn'),
+        outfitLoading: document.getElementById('outfitLoading'),
+        outfitGrid: document.getElementById('outfitGrid'),
+        outfitImage1: document.getElementById('outfitImage1'),
+        outfitImage2: document.getElementById('outfitImage2'),
+        outfitName1: document.getElementById('outfitName1'),
+        outfitName2: document.getElementById('outfitName2'),
+        outfitItems1: document.getElementById('outfitItems1'),
+        outfitItems2: document.getElementById('outfitItems2'),
+        
         // Action buttons
         downloadBtn: document.getElementById('downloadBtn'),
         shareBtn: document.getElementById('shareBtn'),
+        shareTwitterBtn: document.getElementById('shareTwitterBtn'),
+        shareWhatsAppBtn: document.getElementById('shareWhatsAppBtn'),
         tryAgainBtn: document.getElementById('tryAgainBtn'),
+        
+        // Header buttons
+        leaderboardBtn: document.getElementById('leaderboardBtn'),
+        premiumBtn: document.getElementById('premiumBtn'),
+        
+        // Challenge
+        challengeBanner: document.getElementById('challengeBanner'),
+        joinChallengeBtn: document.getElementById('joinChallengeBtn'),
+        
+        // Modals
+        leaderboardModal: document.getElementById('leaderboardModal'),
+        closeLeaderboardBtn: document.getElementById('closeLeaderboardBtn'),
+        leaderboardList: document.getElementById('leaderboardList'),
+        
+        premiumModal: document.getElementById('premiumModal'),
+        closePremiumBtn: document.getElementById('closePremiumBtn'),
+        productsList: document.getElementById('productsList'),
+        
+        challengeModal: document.getElementById('challengeModal'),
+        closeChallengeBtn: document.getElementById('closeChallengeBtn'),
+        challengeModalTitle: document.getElementById('challengeModalTitle'),
+        challengeDesc: document.getElementById('challengeDesc'),
+        challengeParticipants: document.getElementById('challengeParticipants'),
+        acceptChallengeBtn: document.getElementById('acceptChallengeBtn'),
         
         // Toast container
         toastContainer: document.getElementById('toastContainer')
@@ -49,7 +92,13 @@
         currentFile: null,
         currentMemeData: null,
         currentScore: 0,
-        isLoading: false
+        isLoading: false,
+        isGeneratingOutfits: false,
+        userId: localStorage.getItem('roast_user_id'),
+        username: localStorage.getItem('roast_username'),
+        isPremium: localStorage.getItem('roast_premium') === 'true',
+        roastsRemaining: 3,
+        currentChallenge: null
     };
 
     // API Base URL
@@ -61,6 +110,8 @@
     function init() {
         setupEventListeners();
         addSVGGradient();
+        loadUserData();
+        loadChallenge();
     }
 
     // Add SVG gradient for score ring
@@ -76,6 +127,86 @@
                 </linearGradient>
             `;
             svg.insertBefore(defs, svg.firstChild);
+        }
+    }
+
+    // ============================================
+    // User Management
+    // ============================================
+    async function loadUserData() {
+        if (state.userId) {
+            try {
+                const response = await fetch(`${API_BASE}/user/${state.userId}`);
+                const data = await response.json();
+                if (data.success && data.user) {
+                    state.isPremium = data.user.is_premium;
+                    state.roastsRemaining = Math.max(0, 3 - (data.user.total_roasts || 0));
+                    if (data.user.is_premium) {
+                        state.roastsRemaining = 999; // Unlimited
+                    }
+                    updateRoastsDisplay();
+                }
+            } catch (e) {
+                console.log('Could not load user data');
+            }
+        } else {
+            // Auto-register anonymous user
+            await registerUser();
+        }
+    }
+
+    async function registerUser() {
+        const username = 'User' + Math.floor(Math.random() * 10000);
+        try {
+            const response = await fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username })
+            });
+            const data = await response.json();
+            if (data.success && data.user) {
+                state.userId = data.user.user_id;
+                state.username = data.user.username;
+                state.roastsRemaining = 3;
+                localStorage.setItem('roast_user_id', state.userId);
+                localStorage.setItem('roast_username', state.username);
+                updateRoastsDisplay();
+            }
+        } catch (e) {
+            console.log('Could not register user');
+        }
+    }
+
+    function updateRoastsDisplay() {
+        if (elements.roastsCount && elements.roastsRemaining) {
+            elements.roastsCount.textContent = state.isPremium ? '∞' : state.roastsRemaining;
+            if (!state.isPremium && state.roastsRemaining <= 0) {
+                elements.roastsRemaining.classList.add('limit-reached');
+                showToast('Free limit reached! Go Pro for unlimited roasts.', 'error');
+            }
+        }
+    }
+
+    // ============================================
+    // Challenge System
+    // ============================================
+    async function loadChallenge() {
+        try {
+            const response = await fetch(`${API_BASE}/challenges`);
+            const data = await response.json();
+            if (data.success && data.challenge) {
+                state.currentChallenge = data.challenge;
+                updateChallengeBanner(data.challenge);
+            }
+        } catch (e) {
+            console.log('Could not load challenges');
+        }
+    }
+
+    function updateChallengeBanner(challenge) {
+        if (elements.challengeBanner && elements.challengeText) {
+            elements.challengeText.textContent = `${challenge.title} - ${challenge.participants.toLocaleString()} participating!`;
+            elements.challengeBanner.classList.remove('hidden');
         }
     }
 
@@ -113,15 +244,157 @@
         // Download button
         elements.downloadBtn.addEventListener('click', downloadMeme);
 
-        // Share button
-        elements.shareBtn.addEventListener('click', shareResult);
+        // Share buttons
+        if (elements.shareBtn) elements.shareBtn.addEventListener('click', () => shareResult('share'));
+        if (elements.shareTwitterBtn) elements.shareTwitterBtn.addEventListener('click', () => shareResult('twitter'));
+        if (elements.shareWhatsAppBtn) elements.shareWhatsAppBtn.addEventListener('click', () => shareResult('whatsapp'));
 
         // Try again button
         elements.tryAgainBtn.addEventListener('click', resetApp);
 
+        // Outfit generator button
+        if (elements.generateOutfitsBtn) {
+            elements.generateOutfitsBtn.addEventListener('click', generateOutfits);
+        }
+
+        // Header buttons
+        if (elements.leaderboardBtn) elements.leaderboardBtn.addEventListener('click', openLeaderboard);
+        if (elements.premiumBtn) elements.premiumBtn.addEventListener('click', openPremium);
+
+        // Challenge
+        if (elements.joinChallengeBtn) elements.joinChallengeBtn.addEventListener('click', openChallenge);
+        if (elements.acceptChallengeBtn) elements.acceptChallengeBtn.addEventListener('click', acceptChallenge);
+
+        // Modal close buttons
+        if (elements.closeLeaderboardBtn) elements.closeLeaderboardBtn.addEventListener('click', () => closeModal('leaderboard'));
+        if (elements.closePremiumBtn) elements.closePremiumBtn.addEventListener('click', () => closeModal('premium'));
+        if (elements.closeChallengeBtn) elements.closeChallengeBtn.addEventListener('click', () => closeModal('challenge'));
+
+        // Click outside modal to close
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeModal('all');
+            }
+        });
+
         // Keyboard accessibility
         document.addEventListener('keydown', handleKeyboard);
     }
+
+    // ============================================
+    // Modal Management
+    // ============================================
+    function openModal(type) {
+        const modal = document.getElementById(`${type}Modal`);
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeModal(type) {
+        if (type === 'all') {
+            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+        } else {
+            const modal = document.getElementById(`${type}Modal`);
+            if (modal) modal.classList.add('hidden');
+        }
+        document.body.style.overflow = '';
+    }
+
+    async function openLeaderboard() {
+        openModal('leaderboard');
+        if (elements.leaderboardList) {
+            elements.leaderboardList.innerHTML = '<div class="leaderboard-loading">Loading...</div>';
+            try {
+                const response = await fetch(`${API_BASE}/leaderboard`);
+                const data = await response.json();
+                if (data.success && data.entries.length > 0) {
+                    elements.leaderboardList.innerHTML = data.entries.map(entry => `
+                        <div class="leaderboard-item">
+                            <span class="leaderboard-rank">#${entry.rank}</span>
+                            <span class="leaderboard-name">${escapeHtml(entry.username)}</span>
+                            <span class="leaderboard-score">${entry.drip_score}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    elements.leaderboardList.innerHTML = '<div class="leaderboard-empty">No rankings yet. Be the first!</div>';
+                }
+            } catch (e) {
+                elements.leaderboardList.innerHTML = '<div class="leaderboard-empty">Could not load leaderboard</div>';
+            }
+        }
+    }
+
+    async function openPremium() {
+        openModal('premium');
+        if (elements.productsList) {
+            elements.productsList.innerHTML = '<div class="product-loading">Loading products...</div>';
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                const data = await response.json();
+                if (data.success && data.products) {
+                    elements.productsList.innerHTML = data.products.map(product => `
+                        <div class="product-card">
+                            <div class="product-info">
+                                <h3 class="product-name">${escapeHtml(product.name)}</h3>
+                                <p class="product-desc">${escapeHtml(product.description)}</p>
+                            </div>
+                            <div class="product-action">
+                                <span class="product-price">$${product.price}</span>
+                                <button class="buy-btn" onclick="window.app.purchase('${product.id}')">Buy</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                elements.productsList.innerHTML = '<div class="product-error">Could not load products</div>';
+            }
+        }
+    }
+
+    function openChallenge() {
+        if (state.currentChallenge) {
+            if (elements.challengeModalTitle) elements.challengeModalTitle.textContent = state.currentChallenge.title;
+            if (elements.challengeDesc) elements.challengeDesc.textContent = state.currentChallenge.description;
+            if (elements.challengeParticipants) elements.challengeParticipants.textContent = `${state.currentChallenge.participants.toLocaleString()} people joined!`;
+            openModal('challenge');
+        }
+    }
+
+    function acceptChallenge() {
+        showToast('Challenge accepted! Submit your fit to participate.', 'success');
+        closeModal('challenge');
+    }
+
+    // Expose purchase function globally
+    window.app = window.app || {};
+    window.app.purchase = async function(productId) {
+        if (!state.userId) {
+            showToast('Please wait while we set up your account...', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_BASE}/purchase`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: state.userId, product_id: productId })
+            });
+            const data = await response.json();
+            if (data.success) {
+                state.isPremium = true;
+                localStorage.setItem('roast_premium', 'true');
+                showToast('Purchase successful! Welcome to Pro!', 'success');
+                closeModal('premium');
+                updateRoastsDisplay();
+            } else {
+                showToast(data.error || 'Purchase failed', 'error');
+            }
+        } catch (e) {
+            showToast('Could not process purchase', 'error');
+        }
+    };
 
     // ============================================
     // File Handling
@@ -157,6 +430,13 @@
     }
 
     function processFile(file) {
+        // Check roast limits for free users
+        if (!state.isPremium && state.roastsRemaining <= 0) {
+            showToast('Free limit reached! Go Pro for unlimited roasts.', 'error');
+            openPremium();
+            return;
+        }
+
         // Validate file type
         const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!validTypes.includes(file.type)) {
@@ -207,14 +487,28 @@
     async function analyzeOutfit() {
         if (!state.currentFile || state.isLoading) return;
 
+        // Check roast limits
+        if (!state.isPremium && state.roastsRemaining <= 0) {
+            showToast('Free limit reached! Go Pro for unlimited roasts.', 'error');
+            openPremium();
+            return;
+        }
+
         setLoading(true);
 
         const formData = new FormData();
         formData.append('file', state.currentFile);
 
+        // Add user ID header if available
+        const headers = {};
+        if (state.userId) {
+            headers['x-user-id'] = state.userId;
+        }
+
         try {
             const response = await fetch(`${API_BASE}/analyze`, {
                 method: 'POST',
+                headers,
                 body: formData
             });
 
@@ -222,8 +516,16 @@
 
             if (result.success && result.data) {
                 displayResults(result.data);
+                // Update remaining roasts
+                if (!state.isPremium) {
+                    state.roastsRemaining--;
+                    updateRoastsDisplay();
+                }
             } else {
                 showToast(result.error || 'Analysis failed. Please try again.', 'error');
+                if (result.error && result.error.includes('Free limit')) {
+                    openPremium();
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -360,26 +662,51 @@
         showToast('Meme downloaded!', 'success');
     }
 
-    async function shareResult() {
+    async function shareResult(platform) {
         if (!state.currentMemeData) return;
 
+        let shareText = `My drip score is ${state.currentScore}/100 on Roast or Toast! 🔥`;
+        
         try {
-            // Convert base64 to blob
-            const response = await fetch(state.currentMemeData);
-            const blob = await response.blob();
-            const file = new File([blob], 'roast-or-toast.png', { type: 'image/png' });
-
-            if (navigator.share && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    title: 'Roast or Toast',
-                    text: `My drip score: ${state.currentScore}/100! Check it out!`,
-                    files: [file]
-                });
-                showToast('Shared successfully!', 'success');
+            if (platform === 'twitter') {
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+                window.open(twitterUrl, '_blank');
+            } else if (platform === 'whatsapp') {
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+                window.open(whatsappUrl, '_blank');
             } else {
-                // Fallback: copy to clipboard
-                await navigator.clipboard.writeText(`My drip score is ${state.currentScore}/100 on Roast or Toast! 🔥`);
-                showToast('Link copied to clipboard!', 'success');
+                // Native share
+                const response = await fetch(state.currentMemeData);
+                const blob = await response.blob();
+                const file = new File([blob], 'roast-or-toast.png', { type: 'image/png' });
+
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'Roast or Toast',
+                        text: shareText,
+                        files: [file]
+                    });
+                } else {
+                    await navigator.clipboard.writeText(shareText);
+                    showToast('Link copied to clipboard!', 'success');
+                }
+            }
+
+            // Track share for rewards
+            if (state.userId && ['twitter', 'whatsapp', 'instagram', 'share'].includes(platform)) {
+                try {
+                    await fetch(`${API_BASE}/share`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: state.userId, platform })
+                    });
+                    // Award free roast
+                    state.roastsRemaining++;
+                    updateRoastsDisplay();
+                    showToast('+1 free roast earned for sharing!', 'success');
+                } catch (e) {
+                    console.log('Could not track share');
+                }
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
@@ -393,6 +720,7 @@
         state.currentFile = null;
         state.currentMemeData = null;
         state.currentScore = 0;
+        state.isGeneratingOutfits = false;
         
         // Reset file input
         resetFileInput();
@@ -412,6 +740,15 @@
         elements.mistakesList.innerHTML = '';
         elements.memeImage.src = '';
         elements.scoreValue.textContent = '0';
+
+        // Reset outfit generator
+        if (elements.outfitGrid && elements.outfitLoading) {
+            elements.outfitGrid.classList.add('hidden');
+            elements.outfitLoading.classList.add('hidden');
+        }
+        if (elements.generateOutfitsBtn) {
+            elements.generateOutfitsBtn.disabled = false;
+        }
         
         // Show upload card, hide results
         elements.resultsContainer.classList.add('hidden');
@@ -419,6 +756,94 @@
         
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function generateOutfits() {
+        if (!state.currentFile) {
+            showToast('Upload an image first to generate outfits.', 'error');
+            return;
+        }
+        if (state.isGeneratingOutfits) return;
+
+        state.isGeneratingOutfits = true;
+
+        if (elements.outfitLoading) {
+            elements.outfitLoading.classList.remove('hidden');
+        }
+        if (elements.outfitGrid) {
+            elements.outfitGrid.classList.add('hidden');
+        }
+        if (elements.generateOutfitsBtn) {
+            elements.generateOutfitsBtn.disabled = true;
+        }
+
+        const formData = new FormData();
+        formData.append('image', state.currentFile);
+
+        try {
+            const response = await fetch(`${API_BASE}/generate-outfits`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(message || 'Failed to generate outfits');
+            }
+
+            const payload = await response.json();
+            const outfits = Array.isArray(payload.outfits) ? payload.outfits : [];
+
+            if (!outfits.length) {
+                showToast('AI could not generate outfits. Try another photo.', 'error');
+                return;
+            }
+
+            updateOutfitUI(outfits);
+            showToast('AI outfit ideas ready!', 'success');
+        } catch (error) {
+            console.error('Outfit generation error:', error);
+            showToast('Could not generate outfits. Please try again.', 'error');
+        } finally {
+            state.isGeneratingOutfits = false;
+            if (elements.outfitLoading) {
+                elements.outfitLoading.classList.add('hidden');
+            }
+            if (elements.generateOutfitsBtn) {
+                elements.generateOutfitsBtn.disabled = false;
+            }
+        }
+    }
+
+    function updateOutfitUI(outfits) {
+        const first = outfits[0] || {};
+        const second = outfits[1] || first;
+
+        function applyCard(imageEl, nameEl, listEl, data, indexLabel) {
+            if (!imageEl || !nameEl || !listEl) return;
+
+            const src = typeof data.image === 'string' && data.image
+                ? (data.image.startsWith('http') ? data.image : `${API_BASE}${data.image}`)
+                : '';
+            if (src) {
+                imageEl.src = src;
+                imageEl.alt = data.outfit_name || `AI outfit option ${indexLabel}`;
+            }
+
+            nameEl.textContent = data.outfit_name || `Outfit Option ${indexLabel}`;
+
+            const items = Array.isArray(data.items) ? data.items : [];
+            listEl.innerHTML = items
+                .map(i => `<li>${escapeHtml(String(i))}</li>`)
+                .join('');
+        }
+
+        applyCard(elements.outfitImage1, elements.outfitName1, elements.outfitItems1, first, 1);
+        applyCard(elements.outfitImage2, elements.outfitName2, elements.outfitItems2, second, 2);
+
+        if (elements.outfitGrid) {
+            elements.outfitGrid.classList.remove('hidden');
+        }
     }
 
     // ============================================
@@ -463,11 +888,12 @@
     }
 
     function handleKeyboard(e) {
-        // Escape to reset
+        // Escape to reset or close modals
         if (e.key === 'Escape') {
             if (!elements.resultsContainer.classList.contains('hidden')) {
                 resetApp();
             }
+            closeModal('all');
         }
         
         // Enter to analyze (when file selected)
