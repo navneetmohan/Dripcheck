@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roast or Toast 🔥 | AI Outfit Analyzer</title>
+    <meta name="description" content="Upload your outfit photo and get AI-powered fashion analysis with a drip score, style archetype, and hilarious roast or toast!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-gradient bg-gradient-1"></div>
+        <div class="bg-gradient bg-gradient-2"></div>
+        <div class="bg-gradient bg-gradient-3"></div>
+        <div class="bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+
+    <div class="app-wrapper">
+        <!-- Main Container -->
+        <main class="app-container">
+            <!-- Header -->
+            <header class="header">
+                <div class="logo">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">Roast or Toast</span>
+                </div>
+                <p class="tagline">Your AI Fashion Critic</p>
+            </header>
+
+            <!-- Upload Card -->
+            <div class="upload-card" id="uploadCard">
+                <div class="card-header">
+                    <h2>Upload Your Fit</h2>
+                    <p>Get instant AI analysis of your outfit</p>
+                </div>
+                
+                <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload outfit image">
+                    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" hidden>
+                    
+                    <div class="dropzone-content" id="dropzoneContent">
+                        <div class="dropzone-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <p class="dropzone-text">Drag & drop your outfit</p>
+                        <p class="dropzone-subtext">or click to browse files</p>
+                        <span class="supported-formats">Supports JPEG, PNG (max 10MB)</span>
+                    </div>
+                    
+                    <div class="preview-container hidden" id="previewContainer">
+                        <img id="previewImage" class="preview-image" alt="Outfit preview">
+                        <button class="remove-image" id="removeImage" title="Remove image">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="analyze-btn" id="analyzeBtn" disabled>
+                    <span class="btn-content">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        <span class="btn-text">Analyze My Fit</span>
+                    </span>
+                    <span class="btn-loading">
+                        <span class="spinner"></span>
+                        <span>Analyzing your fit...</span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-container hidden" id="resultsContainer">
+                <!-- Score Section -->
+                <div class="result-card score-result">
+                    <div class="score-display">
+                        <div class="score-ring">
+                            <svg class="score-ring-svg" viewBox="0 0 120 120">
+                                <circle class="score-ring-bg" cx="60" cy="60" r="54"/>
+                                <circle class="score-ring-progress" id="scoreRing" cx="60" cy="60" r="54"/>
+                            </svg>
+                            <div class="score-inner">
+                                <span class="score-number" id="scoreValue">0</span>
+                                <span class="score-max">/100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="verdict-display" id="verdictDisplay">
+                        <span class="verdict-emoji" id="verdictEmoji"></span>
+                        <span class="verdict-label" id="verdictText"></span>
+                    </div>
+                </div>
+
+                <!-- Archetype Card -->
+                <div class="result-card archetype-card">
+                    <div class="card-badge">Style Identity</div>
+                    <h3 class="archetype-name" id="archetypeValue">-</h3>
+                    <div class="archetype-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Commentary Card -->
+                <div class="result-card commentary-card">
+                    <div class="card-badge">Verdict</div>
+                    <p class="commentary-text" id="commentaryText"></p>
+                </div>
+
+                <!-- Analysis Grid -->
+                <div class="analysis-grid">
+                    <div class="analysis-card strengths-card">
+                        <div class="card-badge success">✓ What's Working</div>
+                        <ul class="analysis-list" id="strengthsList"></ul>
+                    </div>
+                    <div class="analysis-card mistakes-card">
+                        <div class="card-badge error">✗ Needs Work</div>
+                        <ul class="analysis-list" id="mistakesList"></ul>
+                    </div>
+                </div>
+
+                <!-- Meme Card -->
+                <div class="result-card meme-card">
+                    <div class="card-badge">📱 Share Your Result</div>
+                    <div class="meme-preview">
+                        <img id="memeImage" class="meme-image" alt="Your roast or toast meme">
+                    </div>
+                    <div class="meme-actions">
+                        <button class="action-btn download-btn" id="downloadBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Download Meme
+                        </button>
+                        <button class="action-btn share-btn" id="shareBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                            </svg>
+                            Share
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Try Again -->
+                <button class="try-again-btn" id="tryAgainBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Try Another Outfit
+                </button>
+            </div>
+
+            <!-- Error Toast -->
+            <div class="toast-container" id="toastContainer"></div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by Google Gemini Vision API</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
