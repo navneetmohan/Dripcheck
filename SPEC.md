@@ -1,4 +1,4 @@
-# Roast or Toast - Full Stack AI Web App Specification
+000000# Roast or Toast - Full Stack AI Web App Specification
 
 ## 1. Project Overview
 

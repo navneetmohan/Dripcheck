@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 # Load .env so GEMINI_API_KEY and other vars are available
 load_dotenv(Path(__file__).parent / ".env")
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, Header
+from fastapi import FastAPI, UploadFile, File, HTTPException, Header, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -153,10 +153,23 @@ async def analyze_outfit(
             error=str(e)
         )
     except Exception as e:
-        return AnalysisResponse(
-            success=False,
-            error=f"Analysis failed: {str(e)}"
-        )
+        error_msg = str(e)
+        # Check for specific error types and provide helpful messages
+        if "429" in error_msg or "quota" in error_msg.lower() or "exceeded" in error_msg.lower():
+            return AnalysisResponse(
+                success=False,
+                error="API quota exceeded! The Google Gemini API free tier limit has been reached. Please check your Google Cloud billing or wait for quota reset."
+            )
+        elif "API key" in error_msg.lower() or "authentication" in error_msg.lower():
+            return AnalysisResponse(
+                success=False,
+                error="Invalid API key. Please check your GEMINI_API_KEY in the .env file."
+            )
+        else:
+            return AnalysisResponse(
+                success=False,
+                error=f"Analysis failed: {error_msg}"
+            )
     finally:
         # Clean up temp file
         if os.path.exists(temp_path):
@@ -175,14 +188,15 @@ async def get_meme(filename: str):
 # ============== NEW GROWTH & MONETIZATION ENDPOINTS ==============
 
 @app.post("/register", response_model=UserResponse)
-async def register_user(username: str):
+async def register_user(user_data: dict = Body(...)):
     """Register a new user"""
+    username = user_data.get("username", "User" + str(uuid.uuid4())[:6])
     users = load_users()
     
     user_id = str(uuid.uuid4())
     referral_code = f"ROAST{user_id[:6].upper()}"
     
-    user_data = {
+    user = {
         "user_id": user_id,
         "username": username,
         "total_roasts": 0,
@@ -194,12 +208,12 @@ async def register_user(username: str):
         "referral_used": None
     }
     
-    users[user_id] = user_data
+    users[user_id] = user
     save_users(users)
     
     return UserResponse(
         success=True,
-        user=User(**user_data)
+        user=User(**user)
     )
 
 

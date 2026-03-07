@@ -9,7 +9,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 # as a plain module (uvicorn main:app) from the backend directory.
 from services.style_analyzer import analyze_style_attributes
 from services.outfit_generator import generate_outfit_suggestions
-from services.image_generator import generate_outfit_images
+from services.image_generator import generate_outfit_cards
 
 
 router = APIRouter()
@@ -18,13 +18,14 @@ router = APIRouter()
 @router.post("/generate-outfits")
 async def generate_outfits(image: UploadFile = File(...)) -> Dict[str, Any]:
     """
-    Generate two AI-powered outfit suggestions for the person in the image.
+    Generate two outfit suggestions for the person in the image.
+    Returns outfit items list (no AI image generation).
 
     Returns:
     {
       "outfits": [
-        { "image": "/generated/...", "items": ["...", "..."] },
-        { "image": "/generated/...", "items": ["...", "..."] }
+        { "items": ["...", "..."], "outfit_name": "..." },
+        { "items": ["...", "..."], "outfit_name": "..." }
       ]
     }
     """
@@ -44,19 +45,19 @@ async def generate_outfits(image: UploadFile = File(...)) -> Dict[str, Any]:
         # 1) Analyze style attributes from the image
         attributes = analyze_style_attributes(temp_path)
 
-        # 2) Generate structured outfit suggestions
+        # 2) Generate structured outfit suggestions (no AI image generation)
         outfit_specs = generate_outfit_suggestions(attributes)
 
-        # 3) Turn them into shareable images
-        image_paths = generate_outfit_images(temp_path, outfit_specs)
+        # 3) Generate outfit cards (text-only, no AI images)
+        card_data = generate_outfit_cards(temp_path, outfit_specs)
 
         outfits: List[Dict[str, Any]] = []
-        for spec, web_path in zip(outfit_specs, image_paths):
+        for spec, card in zip(outfit_specs, card_data):
             outfits.append(
                 {
-                    "image": web_path,
                     "items": spec.get("items", []),
                     "outfit_name": spec.get("outfit_name", ""),
+                    "card_image": card,  # Text-based card with outfit details
                 }
             )
 

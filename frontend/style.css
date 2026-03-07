@@ -1442,21 +1442,8 @@ body {
     min-height: 100%;
 }
 
-.outfit-image-wrap {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    background: radial-gradient(circle at top, rgba(255, 77, 77, 0.22), transparent 55%);
-}
-
-.outfit-image-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
 .outfit-info {
-    padding: var(--space-md);
+    padding: var(--space-lg);
 }
 
 .outfit-name {

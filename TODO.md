@@ -1,42 +1,26 @@
-# TODO: Add Growth Features & Monetization
+# TODO: Remove Generated Outfit Images
 
 ## Task
-Transform "Roast or Toast" into a competition-ready app with viral loops and monetization.
+Remove the generated outfit images from the "AI Outfit Generator" section and display only the outfit item lists.
 
-## Growth Features (Step 2) - ✅ COMPLETED
-- [x] Add share to social media buttons (Twitter/X, Instagram Stories, WhatsApp)
-- [x] Create viral challenge system ("24h Fit Drop" challenges)
-- [x] Add leaderboard for best drip scores
-- [x] Add user accounts to track scores (auto-registration)
-- [x] Add referral system (via /referral endpoint)
+## Changes Required
 
-## Monetization (Step 3) - ✅ COMPLETED
-- [x] Add freemium model (3 free roasts, premium for unlimited)
-- [x] Add in-app purchase for "Pro Roast" (unlimited roasts)
-- [x] Add "Super Toast" premium feature
-- [x] Add subscription option for power users ("Monthly Pro")
+### 1. index.html - Remove image containers from outfit cards
+- [x] Remove `<div class="outfit-image-wrap">...</div>` from outfitOption1
+- [x] Remove `<div class="outfit-image-wrap">...</div>` from outfitOption2
 
-## Files Edited
-- `backend/main.py` - Added user accounts, store scores, new API endpoints
-- `backend/models.py` - Added User, Purchase, Leaderboard, Challenge models
-- `frontend/index.html` - Added modals, share buttons, challenge banner
-- `frontend/app.js` - Added growth features, premium handling, share tracking
-- `frontend/style.css` - Added modal, leaderboard, premium UI styles
-- `backend/requirements.txt` - Updated google-generativeai version
+### 2. app.js - Remove image handling code
+- [x] Remove image src/alt population in `applyCard` function
+- [x] Keep the outfit name and items list population logic
 
-## New API Endpoints
-- `POST /register` - Register new user
-- `GET /user/{user_id}` - Get user profile
-- `POST /purchase` - Process purchase (simulated)
-- `GET /leaderboard` - Get top drip scores
-- `POST /share` - Track shares for rewards
-- `POST /referral` - Apply referral code
-- `GET /challenges` - Get active challenge
-- `GET /products` - Get premium products
+### 3. style.css - Remove unused image styling
+- [x] Remove `.outfit-image-wrap` CSS rules (no longer needed)
+- [x] Update `.outfit-option` to remove image-specific styling
 
-## Testing Results
-- ✅ Products endpoint working
-- ✅ Leaderboard endpoint working
-- ✅ Challenges endpoint working
-- ✅ Server running on http://localhost:8000
+## Expected Result
+Each outfit card should show only:
+- Outfit title (e.g., "Urban Zen")
+- Bullet list of clothing items
+
+## Status: COMPLETE ✅
 

@@ -238,3 +238,38 @@ def generate_outfit_images(image_path: str, outfits: List[Dict[str, Any]]) -> Li
 
     return web_paths
 
+
+def generate_outfit_cards(image_path: str, outfits: List[Dict[str, Any]]) -> List[str]:
+    """
+    Generate text-based outfit cards (no AI image generation).
+    Creates a styled card with the outfit details overlaid on the original image.
+    
+    Returns a list of base64 encoded PNG images.
+    """
+    from io import BytesIO
+    
+    # Load the base image
+    base_image = Image.open(image_path)
+    if base_image.mode != "RGB":
+        base_image = base_image.convert("RGB")
+
+    card_data: List[str] = []
+
+    for idx, outfit in enumerate(outfits):
+        # Create outfit card with original image and outfit details overlay
+        card = _make_outfit_card(
+            base_image=base_image,
+            outfit_name=str(outfit.get("outfit_name") or f"Outfit {idx + 1}"),
+            items=[str(i) for i in outfit.get("items") or []],
+            variant_index=idx,
+        )
+        
+        # Convert to base64
+        buffer = BytesIO()
+        card.save(buffer, format="PNG", optimize=True)
+        buffer.seek(0)
+        card_b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        card_data.append(f"data:image/png;base64,{card_b64}")
+
+    return card_data
+

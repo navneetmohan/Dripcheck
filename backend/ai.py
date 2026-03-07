@@ -31,85 +31,66 @@ def load_image_as_base64(image_path: str) -> str:
 
 def analyze_outfit(image_path: str) -> Dict[str, Any]:
     """
-    Analyze outfit using Gemini Vision API.
-    
+    Analyze outfit using the multi-stage vision pipeline.
+
+    Internally runs:
+      1. Scene classification
+      2. Subject visibility gate
+      3. Clothing segmentation
+      4. Conditional deep analysis (prompt chosen per scene type)
+      5. Output normalisation
+
     Returns dict with:
     - drip_score: int (0-100)
     - archetype: str
     - strengths: List[str]
-    - mistakes: List[str]
+    - mistakes:  List[str]
+
+    Always returns a valid dict — graceful degradation handles unanalysable images.
     """
     configure_gemini()
-    
-    # Load and prepare image
-    image = Image.open(image_path)
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-    
-    # Create prompt for Gemini
-    prompt = """You are a harsh but funny fashion critic. Analyze this outfit and return ONLY valid JSON with these exact fields:
 
-{
-  "drip_score": <integer 0-100>,
-  "archetype": "<one word or short phrase like 'Streetwear King', 'Preppy Prince', 'Casual Queen', 'Vintage Vibes', 'Minimalist Master'>",
-  "strengths": ["<2-3 things this outfit does well>"],
-  "mistakes": ["<1-2 things wrong with this outfit>"]
-}
+    # Lazy import to keep the module loadable without the services/ package on path
+    import sys
+    from pathlib import Path
+    _backend = Path(__file__).parent
+    if str(_backend) not in sys.path:
+        sys.path.insert(0, str(_backend))
 
-Be honest but entertaining. Consider: color coordination, fit, accessories, overall cohesion, trend awareness.
-Return ONLY the JSON, no other text."""
-    
-    # Use Gemini 2.5 Flash (free tier has quota; 2.0-flash free tier limit is 0)
-    model = genai.GenerativeModel('gemini-2.5-flash')
-    
-    response = model.generate_content([prompt, image])
-    
-    # Parse JSON from response
-    response_text = response.text.strip()
-    
-    # Extract JSON from response (handle potential markdown code blocks)
-    if '```json' in response_text:
-        response_text = response_text.split('```json')[1].split('```')[0]
-    elif '```' in response_text:
-        response_text = response_text.split('```')[1].split('```')[0]
-    
-    # Clean up and parse JSON
-    response_text = response_text.strip()
-    
-    try:
-        analysis = json.loads(response_text)
-    except json.JSONDecodeError:
-        # Try to extract JSON using regex
-        import re
-        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
-        if json_match:
-            analysis = json.loads(json_match.group())
-        else:
-            # Fallback to default values
-            analysis = {
-                "drip_score": 50,
-                "archetype": "Mystery Fashionista",
-                "strengths": ["You tried"],
-                "mistakes": ["Could not analyze properly"]
-            }
-    
-    # Validate and set defaults
+    from services.vision_pipeline import run_pipeline
+
+    result = run_pipeline(image_path)
+
     return {
-        "drip_score": max(0, min(100, int(analysis.get("drip_score", 50)))),
-        "archetype": analysis.get("archetype", "Style Rebel"),
-        "strengths": analysis.get("strengths", ["Unique choices"]),
-        "mistakes": analysis.get("mistakes", ["Room for improvement"])
+        "drip_score": result.drip_score,
+        "archetype":  result.archetype,
+        "strengths":  result.strengths,
+        "mistakes":   result.mistakes,
+        # Pass through for generate_roast_or_toast to use if needed
+        "_verdict":   result.verdict,
+        "_commentary": result.commentary,
+        "_analysis_mode": result.analysis_mode,
     }
 
 
-def generate_roast_or_toast(analysis: Dict[str, Any]) -> Dict[str, str]:
+def generate_roast_or_toast(analysis: Dict[str, Any]) -> Dict[str, str]:  # noqa: C901
     """
     Generate roast or toast based on drip score.
-    
+
+    If the multi-stage pipeline already produced a verdict + commentary
+    (stored as _verdict / _commentary), those are used directly.
+
     Returns dict with:
     - verdict: str ("ROAST" or "TOAST")
     - commentary: str
     """
+    # Fast path: pipeline already computed these
+    if analysis.get("_verdict") and analysis.get("_commentary"):
+        return {
+            "verdict":    analysis["_verdict"],
+            "commentary": analysis["_commentary"],
+        }
+
     drip_score = analysis.get("drip_score", 50)
     archetype = analysis.get("archetype", "Fashion Victim")
     

@@ -43,8 +43,6 @@
         generateOutfitsBtn: document.getElementById('generateOutfitsBtn'),
         outfitLoading: document.getElementById('outfitLoading'),
         outfitGrid: document.getElementById('outfitGrid'),
-        outfitImage1: document.getElementById('outfitImage1'),
-        outfitImage2: document.getElementById('outfitImage2'),
         outfitName1: document.getElementById('outfitName1'),
         outfitName2: document.getElementById('outfitName2'),
         outfitItems1: document.getElementById('outfitItems1'),
@@ -92,6 +90,9 @@
         currentFile: null,
         currentMemeData: null,
         currentScore: 0,
+        currentVerdict: null,
+        currentArchetype: null,
+        currentCommentary: null,
         isLoading: false,
         isGeneratingOutfits: false,
         userId: localStorage.getItem('roast_user_id'),
@@ -577,6 +578,11 @@
         elements.memeImage.src = data.meme_image;
         state.currentMemeData = data.meme_image;
         state.currentScore = data.drip_score;
+        
+        // Store additional data for sharing with caption
+        state.currentVerdict = data.verdict;
+        state.currentArchetype = data.archetype;
+        state.currentCommentary = data.commentary;
 
         // Animate score ring
         setTimeout(() => {
@@ -665,17 +671,29 @@
     async function shareResult(platform) {
         if (!state.currentMemeData) return;
 
-        let shareText = `My drip score is ${state.currentScore}/100 on Roast or Toast! 🔥`;
+        // Build comprehensive share text with caption
+        let shareText = `My drip score is ${state.currentScore}/100 on Roast or Toast! ${state.currentVerdict === 'TOAST' ? '🔥' : '❄️'}`;
+        
+        // Add archetype and commentary to share text
+        if (state.currentArchetype) {
+            shareText += `\n\nStyle: ${state.currentArchetype}`;
+        }
+        if (state.currentCommentary) {
+            shareText += `\n"${state.currentCommentary}"`;
+        }
+        shareText += `\n\n#RoastOrToast #DripCheck`;
         
         try {
             if (platform === 'twitter') {
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+                // Twitter has character limit, so truncate if needed
+                const truncatedText = shareText.length > 280 ? shareText.substring(0, 277) + '...' : shareText;
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(truncatedText)}`;
                 window.open(twitterUrl, '_blank');
             } else if (platform === 'whatsapp') {
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
                 window.open(whatsappUrl, '_blank');
             } else {
-                // Native share
+                // Native share - includes both image and full caption text
                 const response = await fetch(state.currentMemeData);
                 const blob = await response.blob();
                 const file = new File([blob], 'roast-or-toast.png', { type: 'image/png' });
@@ -687,8 +705,16 @@
                         files: [file]
                     });
                 } else {
-                    await navigator.clipboard.writeText(shareText);
-                    showToast('Link copied to clipboard!', 'success');
+                    // Fallback: copy image to clipboard if supported, otherwise just text
+                    try {
+                        const item = new ClipboardItem({ 'image/png': blob });
+                        await navigator.clipboard.write([item]);
+                        await navigator.clipboard.writeText(shareText);
+                        showToast('Meme and caption copied to clipboard!', 'success');
+                    } catch (e) {
+                        await navigator.clipboard.writeText(shareText);
+                        showToast('Caption copied to clipboard!', 'success');
+                    }
                 }
             }
 
@@ -720,6 +746,9 @@
         state.currentFile = null;
         state.currentMemeData = null;
         state.currentScore = 0;
+        state.currentVerdict = null;
+        state.currentArchetype = null;
+        state.currentCommentary = null;
         state.isGeneratingOutfits = false;
         
         // Reset file input
@@ -819,16 +848,8 @@
         const first = outfits[0] || {};
         const second = outfits[1] || first;
 
-        function applyCard(imageEl, nameEl, listEl, data, indexLabel) {
-            if (!imageEl || !nameEl || !listEl) return;
-
-            const src = typeof data.image === 'string' && data.image
-                ? (data.image.startsWith('http') ? data.image : `${API_BASE}${data.image}`)
-                : '';
-            if (src) {
-                imageEl.src = src;
-                imageEl.alt = data.outfit_name || `AI outfit option ${indexLabel}`;
-            }
+        function applyCard(nameEl, listEl, data, indexLabel) {
+            if (!nameEl || !listEl) return;
 
             nameEl.textContent = data.outfit_name || `Outfit Option ${indexLabel}`;
 
@@ -838,8 +859,8 @@
                 .join('');
         }
 
-        applyCard(elements.outfitImage1, elements.outfitName1, elements.outfitItems1, first, 1);
-        applyCard(elements.outfitImage2, elements.outfitName2, elements.outfitItems2, second, 2);
+        applyCard(elements.outfitName1, elements.outfitItems1, first, 1);
+        applyCard(elements.outfitName2, elements.outfitItems2, second, 2);
 
         if (elements.outfitGrid) {
             elements.outfitGrid.classList.remove('hidden');
