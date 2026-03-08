@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DRIVN | YOUR FIT CHECK AI</title>
+  <title>DRIP/CHECK | YOUR FIT CHECK AI</title>
   <meta name="description" content="The AI that doesn't care about your feelings. Upload your fit, get a drip score.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
             <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
-            <p class="dz-text">DRAG n DROP THE OUTFIT RIGHHHt HERE...</p>
+            <p class="dz-text">DRAG n DROP YOUR OUTFIT HERE...</p>
             <p class="dz-sub">or use buttons below duh</p>
           </div>
           <div class="preview-container hidden" id="previewContainer">
@@ -69,237 +69,6 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-    <div class="app-wrapper">
-        <!-- Main Container -->
-        <main class="app-container">
-            <!-- Header -->
-            <header class="header">
-                <div class="logo">
-                    <span class="logo-icon">🔥</span>
-                    <span class="logo-text">Roast or Toast</span>
-                </div>
-                <div class="header-actions">
-                    <button class="header-btn" id="leaderboardBtn" title="Leaderboard">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </button>
-                    <button class="header-btn premium-btn" id="premiumBtn" title="Go Pro">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                        </svg>
-                        GO PRO
-                    </button>
-                </div>
-                <p class="tagline">Your AI Fashion Critic</p>
-            </header>
-
-            <!-- Active Challenge Banner -->
-            <div class="challenge-banner" id="challengeBanner">
-                <div class="challenge-content">
-                    <span class="challenge-icon">🏆</span>
-                    <span class="challenge-text" id="challengeText">24h Fit Drop Challenge - Join now!</span>
-                </div>
-                <button class="challenge-join-btn" id="joinChallengeBtn">Join</button>
-            </div>
-
-            <!-- Upload Card -->
-            <div class="upload-card" id="uploadCard">
-                <div class="roasts-remaining" id="roastsRemaining">
-                    <span class="roasts-count" id="roastsCount">3</span> free roasts left
-                </div>
-                
-                <div class="card-header">
-                    <h2>Upload Your Fit</h2>
-                    <p>Get instant AI analysis of your outfit</p>
-                </div>
-                
-                <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload outfit image">
-                    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" hidden>
-                    
-                    <div class="dropzone-content" id="dropzoneContent">
-                        <div class="dropzone-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <p class="dropzone-text">Drag & drop your outfit</p>
-                        <p class="dropzone-subtext">or click to browse files</p>
-                        <span class="supported-formats">Supports JPEG, PNG (max 10MB)</span>
-                    </div>
-                    
-                    <div class="preview-container hidden" id="previewContainer">
-                        <img id="previewImage" class="preview-image" alt="Outfit preview">
-                        <button class="remove-image" id="removeImage" title="Remove image">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="analyze-btn" id="analyzeBtn" disabled>
-                    <span class="btn-content">
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        <span class="btn-text">Analyze My Fit</span>
-                    </span>
-                    <span class="btn-loading">
-                        <span class="spinner"></span>
-                        <span>Analyzing your fit...</span>
-                    </span>
-                </button>
-            </div>
-
-            <!-- Results Section -->
-            <div class="results-container hidden" id="resultsContainer">
-                <!-- Score Section -->
-                <div class="result-card score-result">
-                    <div class="score-display">
-                        <div class="score-ring">
-                            <svg class="score-ring-svg" viewBox="0 0 120 120">
-                                <circle class="score-ring-bg" cx="60" cy="60" r="54"/>
-                                <circle class="score-ring-progress" id="scoreRing" cx="60" cy="60" r="54"/>
-                            </svg>
-                            <div class="score-inner">
-                                <span class="score-number" id="scoreValue">0</span>
-                                <span class="score-max">/100</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="verdict-display" id="verdictDisplay">
-                        <span class="verdict-emoji" id="verdictEmoji"></span>
-                        <span class="verdict-label" id="verdictText"></span>
-                    </div>
-                </div>
-
-                <!-- Archetype Card -->
-                <div class="result-card archetype-card">
-                    <div class="card-badge">Style Identity</div>
-                    <h3 class="archetype-name" id="archetypeValue">-</h3>
-                    <div class="archetype-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 0 001.2.25 423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Commentary Card -->
-                <div class="result-card commentary-card">
-                    <div class="card-badge">Verdict</div>
-                    <p class="commentary-text" id="commentaryText"></p>
-                </div>
-
-                <!-- Analysis Grid -->
-                <div class="analysis-grid">
-                    <div class="analysis-card strengths-card">
-                        <div class="card-badge success">✓ What's Working</div>
-                        <ul class="analysis-list" id="strengthsList"></ul>
-                    </div>
-                    <div class="analysis-card mistakes-card">
-                        <div class="card-badge error">✗ Needs Work</div>
-                        <ul class="analysis-list" id="mistakesList"></ul>
-                    </div>
-                </div>
-
-                <!-- Meme Card -->
-                <div class="result-card meme-card">
-                    <div class="card-badge">📱 Share Your Result</div>
-                    <div class="meme-preview">
-                        <img id="memeImage" class="meme-image" alt="Your roast or toast meme">
-                    </div>
-                    <div class="meme-actions">
-                        <button class="action-btn download-btn" id="downloadBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                            </svg>
-                            Download
-                        </button>
-                        <button class="action-btn share-btn twitter" id="shareTwitterBtn" data-platform="twitter">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                            </svg>
-                            Twitter
-                        </button>
-                        <button class="action-btn share-btn whatsapp" id="shareWhatsAppBtn" data-platform="whatsapp">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                            </svg>
-                            WhatsApp
-                        </button>
-                    </div>
-                </div>
-
-                <!-- AI Outfit Generator -->
-                <div class="result-card outfit-card" id="outfitCard">
-                    <div class="card-badge">AI Outfit Generator</div>
-                    <div class="outfit-header">
-                        <h3 class="outfit-title">See Fits That Would Suit You</h3>
-                        <button class="action-btn primary-outfit-btn" id="generateOutfitsBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 4v16m8-8H4"/>
-                            </svg>
-                            Generate Outfit Ideas
-                        </button>
-                    </div>
-
-                    <div class="outfit-content">
-                        <div class="outfit-loading hidden" id="outfitLoading">
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                        </div>
-
-                        <div class="outfit-grid hidden" id="outfitGrid">
-                            <div class="outfit-option" id="outfitOption1">
-                                <div class="outfit-info">
-                                    <h4 class="outfit-name" id="outfitName1">Outfit Option 1</h4>
-                                    <ul class="outfit-items" id="outfitItems1"></ul>
-                                </div>
-                            </div>
-                            <div class="outfit-option" id="outfitOption2">
-                                <div class="outfit-info">
-                                    <h4 class="outfit-name" id="outfitName2">Outfit Option 2</h4>
-                                    <ul class="outfit-items" id="outfitItems2"></ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Try Again -->
-                <button class="try-again-btn" id="tryAgainBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Try Another Outfit
-                </button>
-            </div>
-
-            <!-- Error Toast -->
-            <div class="toast-container" id="toastContainer"></div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Powered by Google Gemini Vision API</p>
-        </footer>
-    </div>
-
-    <!-- Leaderboard Modal -->
-    <div class="modal hidden" id="leaderboardModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🏆 Leaderboard</h2>
-                <button class="modal-close" id="closeLeaderboardBtn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="leaderboard-list" id="leaderboardList">
-                    <div class="leaderboard-loading">Loading...</div>
-                </div>
-            </div>
-=======
         <div class="upload-btns">
           <button class="btn-upload btn-file" id="fileTriggerBtn" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0l-4 4m4-4l4 4"/></svg>
@@ -309,7 +78,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
             SNAP
           </button>
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
         </div>
 
         <p class="upload-disclaimer">WARNING: BRUTALLY HONEST AI AHEAD.<br>WE ARE NOT RESPONSIBLE FOR RUINED EGOS.</p>
@@ -490,3 +258,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+

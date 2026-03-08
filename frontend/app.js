@@ -1,6 +1,6 @@
 /**
  * Roast or Toast — Frontend Application
- * Original logic preserved. New elements wired for brutalist UI redesign.
+ * Brutalist Gen-Z UI for AI Fashion Analysis
  */
 
 (function() {
@@ -33,7 +33,7 @@
         // Verdict — hidden compat wrappers kept for original logic
         verdictDisplay: document.getElementById('verdictDisplay'),
         verdictEmoji:   document.getElementById('verdictEmoji'),
-        verdictText:    document.getElementById('verdictText'),   // now the big headline word
+        verdictText:    document.getElementById('verdictText'),
 
         // Meme card display elements (new brutalist card)
         resultCardPhoto: document.getElementById('resultCardPhoto'),
@@ -57,15 +57,6 @@
         // Outfit generator
         outfitCard:         document.getElementById('outfitCard'),
         generateOutfitsBtn: document.getElementById('generateOutfitsBtn'),
-<<<<<<< HEAD
-        outfitLoading: document.getElementById('outfitLoading'),
-        outfitGrid: document.getElementById('outfitGrid'),
-        outfitName1: document.getElementById('outfitName1'),
-        outfitName2: document.getElementById('outfitName2'),
-        outfitItems1: document.getElementById('outfitItems1'),
-        outfitItems2: document.getElementById('outfitItems2'),
-        
-=======
         outfitLoading:      document.getElementById('outfitLoading'),
         outfitGrid:         document.getElementById('outfitGrid'),
         outfitName1:        document.getElementById('outfitName1'),
@@ -73,7 +64,6 @@
         outfitItems1:       document.getElementById('outfitItems1'),
         outfitItems2:       document.getElementById('outfitItems2'),
 
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
         // Action buttons
         downloadBtn:      document.getElementById('downloadBtn'),
         shareTwitterBtn:  document.getElementById('shareTwitterBtn'),
@@ -111,20 +101,6 @@
     // State
     // ============================================
     let state = {
-<<<<<<< HEAD
-        currentFile: null,
-        currentMemeData: null,
-        currentScore: 0,
-        currentVerdict: null,
-        currentArchetype: null,
-        currentCommentary: null,
-        isLoading: false,
-        isGeneratingOutfits: false,
-        userId: localStorage.getItem('roast_user_id'),
-        username: localStorage.getItem('roast_username'),
-        isPremium: localStorage.getItem('roast_premium') === 'true',
-        roastsRemaining: 3,
-=======
         currentFile:           null,
         currentMemeData:       null,
         currentScore:          0,
@@ -137,7 +113,6 @@
         username:    localStorage.getItem('roast_username'),
         isPremium:   localStorage.getItem('roast_premium') === 'true',
         roastsRemaining:  3,
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
         currentChallenge: null
     };
 
@@ -153,7 +128,6 @@
         loadChallenge();
     }
 
-    // Keep SVG gradient for hidden score ring (JS compat)
     function addSVGGradient() {
         const svg = document.querySelector('.score-ring-svg');
         if (svg) {
@@ -181,8 +155,21 @@
                     state.roastsRemaining = Math.max(0, 3 - (data.user.total_roasts || 0));
                     if (data.user.is_premium) state.roastsRemaining = 999;
                     updateRoastsDisplay();
+                } else {
+                    // User not found, register new user
+                    console.log('User not found, registering new user');
+                    localStorage.removeItem('roast_user_id');
+                    localStorage.removeItem('roast_username');
+                    state.userId = null;
+                    await registerUser();
                 }
-            } catch (e) { console.log('Could not load user data'); }
+            } catch (e) { 
+                console.log('Could not load user data, registering new user');
+                localStorage.removeItem('roast_user_id');
+                localStorage.removeItem('roast_username');
+                state.userId = null;
+                await registerUser(); 
+            }
         } else {
             await registerUser();
         }
@@ -244,7 +231,6 @@
     // Event Listeners
     // ============================================
     function setupEventListeners() {
-        // FILE trigger button → opens file picker
         if (elements.fileTriggerBtn) {
             elements.fileTriggerBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -252,7 +238,6 @@
             });
         }
 
-        // SNAP trigger button → opens camera
         if (elements.snapTriggerBtn) {
             elements.snapTriggerBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -260,7 +245,6 @@
             });
         }
 
-        // Dropzone click → file picker (when no file yet)
         elements.dropzone.addEventListener('click', (e) => {
             if (e.target === elements.removeImage || elements.removeImage.contains(e.target)) return;
             elements.fileInput.click();
@@ -269,48 +253,36 @@
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elements.fileInput.click(); }
         });
 
-        // File inputs
         elements.fileInput.addEventListener('change', handleFileSelect);
         if (elements.snapInput) elements.snapInput.addEventListener('change', handleFileSelect);
 
-        // Drag and drop
         elements.dropzone.addEventListener('dragover',  handleDragOver);
         elements.dropzone.addEventListener('dragleave', handleDragLeave);
         elements.dropzone.addEventListener('drop',      handleDrop);
 
-        // Remove image
         elements.removeImage.addEventListener('click', removeSelectedImage);
 
-        // Analyze
         elements.analyzeBtn.addEventListener('click', analyzeOutfit);
 
-        // Download
         elements.downloadBtn.addEventListener('click', downloadMeme);
 
-        // Share
         if (elements.shareTwitterBtn)  elements.shareTwitterBtn.addEventListener('click',  () => shareResult('twitter'));
         if (elements.shareWhatsAppBtn) elements.shareWhatsAppBtn.addEventListener('click', () => shareResult('whatsapp'));
 
-        // Try again
         elements.tryAgainBtn.addEventListener('click', resetApp);
 
-        // Outfit generator
         if (elements.generateOutfitsBtn) elements.generateOutfitsBtn.addEventListener('click', generateOutfits);
 
-        // Header buttons
         if (elements.leaderboardBtn) elements.leaderboardBtn.addEventListener('click', openLeaderboard);
         if (elements.premiumBtn)     elements.premiumBtn.addEventListener('click',     openPremium);
 
-        // Challenge
         if (elements.joinChallengeBtn)  elements.joinChallengeBtn.addEventListener('click',  openChallenge);
         if (elements.acceptChallengeBtn) elements.acceptChallengeBtn.addEventListener('click', acceptChallenge);
 
-        // Modal close buttons
         if (elements.closeLeaderboardBtn) elements.closeLeaderboardBtn.addEventListener('click', () => closeModal('leaderboard'));
         if (elements.closePremiumBtn)     elements.closePremiumBtn.addEventListener('click',     () => closeModal('premium'));
         if (elements.closeChallengeBtn)   elements.closeChallengeBtn.addEventListener('click',   () => closeModal('challenge'));
 
-        // Click outside modal to close
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) closeModal('all');
         });
@@ -399,7 +371,6 @@
         closeModal('challenge');
     }
 
-    // Expose purchase globally
     window.app = window.app || {};
     window.app.purchase = async function(productId) {
         if (!state.userId) { showToast('Please wait while we set up your account...', 'error'); return; }
@@ -507,21 +478,27 @@
                 method: 'POST', headers, body: formData
             });
             const result = await response.json();
+            
+            console.log('API Response:', result);
 
             if (result.success && result.data) {
+                console.log('Analysis data:', result.data);
+                console.log('Drip Score:', result.data.drip_score);
+                console.log('Archetype:', result.data.archetype);
+                console.log('Verdict:', result.data.verdict);
+                
                 displayResults(result.data);
                 if (!state.isPremium) { state.roastsRemaining--; updateRoastsDisplay(); }
             } else {
-                showToast(result.error || 'Analysis failed. Please try again.', 'error');
+                console.error('API Error:', result.error);
+                // Show detailed error to user
+                const errorMsg = result.error || 'Analysis failed. Please try again.';
+                showToast(errorMsg, 'error');
                 if (result.error && result.error.includes('Free limit')) openPremium();
             }
         } catch (error) {
             console.error('Error:', error);
-            if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-                showToast('Cannot connect to server. Make sure the backend is running.', 'error');
-            } else {
-                showToast('An error occurred. Please try again.', 'error');
-            }
+            showToast('An error occurred. Please try again. Check console for details.', 'error');
         } finally {
             setLoading(false);
         }
@@ -531,78 +508,46 @@
     // Results Display
     // ============================================
     function displayResults(data) {
-        // Hide upload, show results
         elements.uploadCard.classList.add('hidden');
         elements.resultsContainer.classList.remove('hidden');
 
         const isToast = data.verdict === 'TOAST';
 
-        // ── New meme card elements ──────────────────────────
-
-        // Mirror uploaded photo to the result card
         if (elements.resultCardPhoto && elements.previewImage) {
             elements.resultCardPhoto.src = elements.previewImage.src;
         }
 
-        // Verdict stamp on photo
         if (elements.verdictStamp) {
             elements.verdictStamp.textContent = data.verdict;
             elements.verdictStamp.className = 'mc-stamp' + (isToast ? ' is-toast' : '');
         }
 
-        // Archetype bar colour
         if (elements.archetypeBar) {
             elements.archetypeBar.className = 'mc-archetype-bar' + (isToast ? ' is-toast' : '');
         }
 
-        // Headline verdict word + colour
         if (elements.verdictText) {
             elements.verdictText.textContent = data.verdict;
             elements.verdictText.className = 'vh-verdict' + (isToast ? '' : ' is-roast');
         }
 
-        // Archetype, commentary
         elements.archetypeValue.textContent = data.archetype;
         elements.commentaryText.textContent  = data.commentary;
 
-        // Strengths list
         elements.strengthsList.innerHTML = data.strengths
             .map(s => `<li>${escapeHtml(s)}</li>`).join('');
 
-        // Mistakes list
         elements.mistakesList.innerHTML = data.mistakes
             .map(m => `<li>${escapeHtml(m)}</li>`).join('');
 
-        // ── Original compat fields ──────────────────────────
-
-        // Animate score number
-        animateScore(data.drip_score);
-
-        // Hidden verdict compat elements (original logic)
-        elements.verdictDisplay.className = 'verdict-display ' + (isToast ? 'toast' : 'roast');
-        elements.verdictEmoji.textContent  = isToast ? '🔥' : '❄️';
-
-        // Backend meme image (hidden, for download)
         elements.memeImage.src = data.meme_image;
-<<<<<<< HEAD
-        state.currentMemeData = data.meme_image;
-        state.currentScore = data.drip_score;
-        
-        // Store additional data for sharing with caption
-        state.currentVerdict = data.verdict;
-        state.currentArchetype = data.archetype;
-        state.currentCommentary = data.commentary;
-=======
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
 
-        // Store state for sharing
         state.currentMemeData   = data.meme_image;
         state.currentScore      = data.drip_score;
         state.currentVerdict    = data.verdict;
         state.currentArchetype  = data.archetype;
         state.currentCommentary = data.commentary;
 
-        // Score ring animation (hidden SVG — kept for compat)
         setTimeout(() => {
             const circumference = 2 * Math.PI * 54;
             const progress = (data.drip_score / 100) * circumference;
@@ -611,7 +556,8 @@
             }
         }, 100);
 
-        // Scroll to results
+        animateScore(data.drip_score);
+
         elements.resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         showToast('Analysis complete! 🔥', 'success');
     }
@@ -662,26 +608,6 @@
     async function shareResult(platform) {
         if (!state.currentMemeData) return;
 
-<<<<<<< HEAD
-        // Build comprehensive share text with caption
-        let shareText = `My drip score is ${state.currentScore}/100 on Roast or Toast! ${state.currentVerdict === 'TOAST' ? '🔥' : '❄️'}`;
-        
-        // Add archetype and commentary to share text
-        if (state.currentArchetype) {
-            shareText += `\n\nStyle: ${state.currentArchetype}`;
-        }
-        if (state.currentCommentary) {
-            shareText += `\n"${state.currentCommentary}"`;
-        }
-        shareText += `\n\n#RoastOrToast #DripCheck`;
-        
-        try {
-            if (platform === 'twitter') {
-                // Twitter has character limit, so truncate if needed
-                const truncatedText = shareText.length > 280 ? shareText.substring(0, 277) + '...' : shareText;
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(truncatedText)}`;
-                window.open(twitterUrl, '_blank');
-=======
         let shareText = `My drip score is ${state.currentScore}/100 on Roast or Toast! ${state.currentVerdict === 'TOAST' ? '🔥' : '❄️'}`;
         if (state.currentArchetype)  shareText += `\n\nStyle: ${state.currentArchetype}`;
         if (state.currentCommentary) shareText += `\n"${state.currentCommentary}"`;
@@ -691,33 +617,19 @@
             if (platform === 'twitter') {
                 const truncated = shareText.length > 280 ? shareText.substring(0, 277) + '...' : shareText;
                 window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(truncated)}`, '_blank');
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
             } else if (platform === 'whatsapp') {
                 window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
             } else {
-<<<<<<< HEAD
-                // Native share - includes both image and full caption text
-=======
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
                 const response = await fetch(state.currentMemeData);
                 const blob = await response.blob();
                 const file = new File([blob], 'roast-or-toast.png', { type: 'image/png' });
                 if (navigator.share && navigator.canShare({ files: [file] })) {
                     await navigator.share({ title: 'Roast or Toast', text: shareText, files: [file] });
                 } else {
-<<<<<<< HEAD
-                    // Fallback: copy image to clipboard if supported, otherwise just text
-                    try {
-                        const item = new ClipboardItem({ 'image/png': blob });
-                        await navigator.clipboard.write([item]);
-                        await navigator.clipboard.writeText(shareText);
-                        showToast('Meme and caption copied to clipboard!', 'success');
-=======
                     try {
                         const item = new ClipboardItem({ 'image/png': blob });
                         await navigator.clipboard.write([item]);
                         showToast('Meme copied to clipboard!', 'success');
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
                     } catch (e) {
                         await navigator.clipboard.writeText(shareText);
                         showToast('Caption copied to clipboard!', 'success');
@@ -725,7 +637,6 @@
                 }
             }
 
-            // Track share for rewards
             if (state.userId && ['twitter', 'whatsapp', 'instagram'].includes(platform)) {
                 try {
                     await fetch(`${API_BASE}/share`, {
@@ -744,34 +655,21 @@
     }
 
     function resetApp() {
-        // Reset state
-<<<<<<< HEAD
-        state.currentFile = null;
-        state.currentMemeData = null;
-        state.currentScore = 0;
-        state.currentVerdict = null;
-        state.currentArchetype = null;
-        state.currentCommentary = null;
-=======
         state.currentFile         = null;
         state.currentMemeData     = null;
         state.currentScore        = 0;
         state.currentVerdict      = null;
         state.currentArchetype    = null;
         state.currentCommentary   = null;
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
         state.isGeneratingOutfits = false;
 
         resetFileInput();
 
-        // Reset hidden score ring
         if (elements.scoreRing) elements.scoreRing.style.strokeDashoffset = '339.292';
 
-        // Reset verdict compat elements
         elements.verdictDisplay.className = 'verdict-display';
         elements.verdictEmoji.textContent = '';
 
-        // Reset new card elements
         if (elements.verdictText) {
             elements.verdictText.textContent = 'VERDICT';
             elements.verdictText.className   = 'vh-verdict';
@@ -787,12 +685,10 @@
         elements.mistakesList.innerHTML      = '';
         elements.memeImage.src               = '';
 
-        // Reset outfit generator
         if (elements.outfitGrid)    elements.outfitGrid.classList.add('hidden');
         if (elements.outfitLoading) elements.outfitLoading.classList.add('hidden');
         if (elements.generateOutfitsBtn) elements.generateOutfitsBtn.disabled = false;
 
-        // Show upload, hide results
         elements.resultsContainer.classList.add('hidden');
         elements.uploadCard.classList.remove('hidden');
 
@@ -833,33 +729,16 @@
         const first  = outfits[0] || {};
         const second = outfits[1] || first;
 
-<<<<<<< HEAD
-        function applyCard(nameEl, listEl, data, indexLabel) {
-            if (!nameEl || !listEl) return;
-
-            nameEl.textContent = data.outfit_name || `Outfit Option ${indexLabel}`;
-
-=======
         function applyCard(nameEl, listEl, data, idx) {
             if (!nameEl || !listEl) return;
             nameEl.textContent = data.outfit_name || `OUTFIT ${idx}`;
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
             const items = Array.isArray(data.items) ? data.items : [];
             listEl.innerHTML = items.map(i => `<li>${escapeHtml(String(i))}</li>`).join('');
         }
 
-<<<<<<< HEAD
-        applyCard(elements.outfitName1, elements.outfitItems1, first, 1);
-        applyCard(elements.outfitName2, elements.outfitItems2, second, 2);
-
-        if (elements.outfitGrid) {
-            elements.outfitGrid.classList.remove('hidden');
-        }
-=======
         applyCard(elements.outfitName1, elements.outfitItems1, first,  1);
         applyCard(elements.outfitName2, elements.outfitItems2, second, 2);
         if (elements.outfitGrid) elements.outfitGrid.classList.remove('hidden');
->>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
     }
 
     // ============================================
@@ -871,12 +750,10 @@
         if (loading) {
             elements.analyzeBtn.classList.add('loading');
             elements.analyzeBtn.disabled = true;
-            // Show full-screen loading overlay
             if (elements.loadingOverlay) elements.loadingOverlay.classList.remove('hidden');
         } else {
             elements.analyzeBtn.classList.remove('loading');
             if (state.currentFile) elements.analyzeBtn.disabled = false;
-            // Hide loading overlay
             if (elements.loadingOverlay) elements.loadingOverlay.classList.add('hidden');
         }
     }
@@ -917,3 +794,4 @@
     }
 
 })();
+
