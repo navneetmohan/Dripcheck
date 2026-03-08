@@ -1,30 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roast or Toast 🔥 | AI Outfit Analyzer</title>
-    <meta name="description" content="Upload your outfit photo and get AI-powered fashion analysis with a drip score, style archetype, and hilarious roast or toast!">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRIVN | YOUR FIT CHECK AI</title>
+  <meta name="description" content="The AI that doesn't care about your feelings. Upload your fit, get a drip score.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Share+Tech+Mono&family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-animation">
-        <div class="bg-gradient bg-gradient-1"></div>
-        <div class="bg-gradient bg-gradient-2"></div>
-        <div class="bg-gradient bg-gradient-3"></div>
-        <div class="bg-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-        </div>
-    </div>
 
+  <div class="bg-noise" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div class="nav-logo">
+      <svg class="nav-bolt" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 3L4 14h7v7l9-11h-7z"/></svg>
+      <span>ROAST/TOAST</span>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn" id="leaderboardBtn">LEADERBOARD</button>
+      <button class="nav-btn nav-btn-pro" id="premiumBtn">⚡ GO PRO</button>
+      <button class="nav-btn nav-btn-gallery">GALLERY</button>
+    </div>
+  </nav>
+
+  <!-- CHALLENGE BANNER -->
+  <div class="challenge-banner hidden" id="challengeBanner">
+    <span>🏆</span>
+    <span id="challengeText">24h Fit Drop Challenge</span>
+    <button id="joinChallengeBtn" class="challenge-join">JOIN →</button>
+  </div>
+
+  <!-- HERO / UPLOAD -->
+  <section class="hero-section" id="uploadCard">
+    <div class="hero-glow hero-glow-l" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-r" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-title-block">
+        <h1 class="hero-title">
+          <span class="title-line" data-glitch="FIT">FIT</span>
+          <span class="title-line" data-glitch="CHECK.">CHECK.</span>
+        </h1>
+        <div class="hero-tagline"><span>THE AI THAT DOESN'T CARE ABOUT YOUR FEELINGS xoxo</span></div>
+      </div>
+
+      <div class="upload-box">
+        <div class="upload-box-header">UPLOAD FIT</div>
+
+        <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" hidden>
+        <input type="file" id="snapInput" accept="image/*" capture="environment" hidden>
+
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload outfit image">
+          <div class="dropzone-idle" id="dropzoneContent">
+            <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="dz-text">DRAG n DROP THE OUTFIT RIGHHHt HERE...</p>
+            <p class="dz-sub">or use buttons below duh</p>
+          </div>
+          <div class="preview-container hidden" id="previewContainer">
+            <img id="previewImage" class="preview-img" alt="Outfit preview">
+            <button class="remove-image" id="removeImage" title="Remove image" aria-label="Remove image">✕</button>
+          </div>
+        </div>
+
+<<<<<<< HEAD
     <div class="app-wrapper">
         <!-- Main Container -->
         <main class="app-container">
@@ -254,45 +299,194 @@
                     <div class="leaderboard-loading">Loading...</div>
                 </div>
             </div>
+=======
+        <div class="upload-btns">
+          <button class="btn-upload btn-file" id="fileTriggerBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0l-4 4m4-4l4 4"/></svg>
+            FILE
+          </button>
+          <button class="btn-upload btn-snap" id="snapTriggerBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            SNAP
+          </button>
+>>>>>>> 1c63582 (`Removed generated outfit images and AI meme images`)
         </div>
+
+        <p class="upload-disclaimer">WARNING: BRUTALLY HONEST AI AHEAD.<br>WE ARE NOT RESPONSIBLE FOR RUINED EGOS.</p>
+
+        <div class="roasts-remaining" id="roastsRemaining">
+          <span id="roastsCount">3</span> FREE ROASTS LEFT
+        </div>
+
+        <button class="btn-analyze" id="analyzeBtn" disabled type="button">
+          <span class="btn-analyze-text">
+            <svg class="btn-bolt" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 3L4 14h7v7l9-11h-7z"/></svg>
+            ANALYZE MY FIT
+          </span>
+          <span class="btn-analyze-loading" aria-live="polite">
+            <span class="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>
+            AI IS JUDGING...
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay hidden" id="loadingOverlay" role="status" aria-label="Analyzing outfit">
+    <div class="loading-inner">
+      <div class="loading-eye" aria-hidden="true">👁</div>
+      <h2 class="loading-headline">AI IS JUDGING<br>YOUR OUTFIT</h2>
+      <p class="loading-sub">SCANNING FOR DRIP DEFICIENCY...</p>
+      <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+      <p class="loading-hint">THIS USUALLY TAKES ~10 SECONDS</p>
+    </div>
+  </div>
+
+  <!-- RESULTS SECTION -->
+  <section class="results-section hidden" id="resultsContainer" aria-label="Analysis results">
+
+    <!-- LEFT: Verdict + Actions -->
+    <div class="verdict-panel">
+      <button class="btn-new-fit" id="tryAgainBtn" type="button">← NEW FIT</button>
+
+      <div class="verdict-headline">
+        <div class="vh-line">YOUR</div>
+        <div class="vh-verdict" id="verdictText">VERDICT</div>
+        <div class="vh-line">IS IN.</div>
+      </div>
+
+      <p class="verdict-desc">THE AI HAS SPOKEN. SAVE THIS CARD AND POST IT ON YOUR STORY TO LET YOUR FOLLOWERS KNOW THE HARSH TRUTH.</p>
+
+      <div class="result-actions">
+        <button id="generateOutfitsBtn" class="btn-result btn-reality" type="button">
+          REALITY CHECK <span class="btn-ico">⊙</span>
+        </button>
+        <button id="downloadBtn" class="btn-result btn-save" type="button">
+          SAVE MEME CARD <span class="btn-ico">↓</span>
+        </button>
+      </div>
+
+      <div class="share-row">
+        <button id="shareTwitterBtn" class="btn-share" data-platform="twitter" type="button">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="share-ico" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / TWITTER
+        </button>
+        <button id="shareWhatsAppBtn" class="btn-share" data-platform="whatsapp" type="button">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="share-ico" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WHATSAPP
+        </button>
+      </div>
+
+      <!-- Outfit generator -->
+      <div id="outfitCard" class="outfit-section">
+        <div class="outfit-loading hidden" id="outfitLoading">
+          <div class="outfit-skel"></div>
+          <div class="outfit-skel"></div>
+        </div>
+        <div class="outfit-grid hidden" id="outfitGrid">
+          <div class="outfit-option" id="outfitOption1">
+            <h4 class="outfit-name" id="outfitName1">OUTFIT 1</h4>
+            <ul class="outfit-items" id="outfitItems1"></ul>
+          </div>
+          <div class="outfit-option" id="outfitOption2">
+            <h4 class="outfit-name" id="outfitName2">OUTFIT 2</h4>
+            <ul class="outfit-items" id="outfitItems2"></ul>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Premium Modal -->
-    <div class="modal hidden" id="premiumModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>⚡ Go Pro</h2>
-                <button class="modal-close" id="closePremiumBtn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="premium-intro">
-                    <p>Unlock unlimited roasts and exclusive features!</p>
-                </div>
-                <div class="products-list" id="productsList">
-                    <div class="product-loading">Loading products...</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- RIGHT: Meme Card Panel -->
+    <div class="meme-panel">
+      <div class="hex-pattern" aria-hidden="true"></div>
+      <div class="panel-wm" aria-hidden="true">⚡</div>
 
-    <!-- Challenge Modal -->
-    <div class="modal hidden" id="challengeModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="challengeModalTitle">🏆 Challenge</h2>
-                <button class="modal-close" id="closeChallengeBtn">&times;</button>
+      <div class="meme-card-wrapper">
+        <div class="meme-card" id="memeCardDisplay">
+          <div class="mc-header">DRIP SCORE: <span id="scoreValue">0</span>/100</div>
+          <div class="mc-photo-wrap">
+            <img id="resultCardPhoto" class="mc-photo" alt="Your outfit">
+            <div class="mc-stamp" id="verdictStamp">ROAST</div>
+          </div>
+          <div class="mc-archetype-bar" id="archetypeBar">
+            ARCHETYPE: <span id="archetypeValue">—</span>
+          </div>
+          <div class="mc-commentary"><p id="commentaryText"></p></div>
+          <div class="mc-analysis">
+            <div class="mc-col mc-strengths-col">
+              <div class="mc-col-head">✓ FIRE</div>
+              <ul id="strengthsList"></ul>
             </div>
-            <div class="modal-body">
-                <div class="challenge-details" id="challengeDetails">
-                    <p class="challenge-desc" id="challengeDesc"></p>
-                    <p class="challenge-participants" id="challengeParticipants"></p>
-                    <button class="challenge-accept-btn" id="acceptChallengeBtn">Accept Challenge</button>
-                </div>
+            <div class="mc-col mc-mistakes-col">
+              <div class="mc-col-head">✗ MISS</div>
+              <ul id="mistakesList"></ul>
             </div>
+          </div>
+          <div class="mc-footer">ROAST OR TOAST AI</div>
         </div>
-    </div>
+      </div>
 
-    <script src="app.js"></script>
+      <!-- Hidden: backend meme for download only -->
+      <img id="memeImage" style="display:none" alt="">
+    </div>
+  </section>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- HIDDEN JS-COMPAT ELEMENTS (manipulated by app.js but not shown) -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" class="score-ring-svg" viewBox="0 0 120 120">
+    <defs></defs>
+    <circle class="score-ring-bg" cx="60" cy="60" r="54"/>
+    <circle id="scoreRing" cx="60" cy="60" r="54" style="stroke-dasharray:339.292;stroke-dashoffset:339.292;fill:none;stroke:#888;stroke-width:8;"/>
+  </svg>
+  <div style="display:none" aria-hidden="true">
+    <div id="verdictDisplay"><span id="verdictEmoji"></span></div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal hidden" id="leaderboardModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">🏆 LEADERBOARD</h2>
+        <button class="modal-close" id="closeLeaderboardBtn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="leaderboard-list" id="leaderboardList"><div class="modal-loading">LOADING...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="premiumModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">⚡ GO PRO</h2>
+        <button class="modal-close" id="closePremiumBtn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">UNLOCK UNLIMITED ROASTS + EXCLUSIVE FEATURES</p>
+        <div class="products-list" id="productsList"><div class="modal-loading">LOADING PRODUCTS...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="challengeModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="challengeModalTitle">🏆 CHALLENGE</h2>
+        <button class="modal-close" id="closeChallengeBtn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="challenge-details" id="challengeDetails">
+          <p class="challenge-desc" id="challengeDesc"></p>
+          <p class="challenge-participants" id="challengeParticipants"></p>
+          <button class="btn-accept" id="acceptChallengeBtn" type="button">ACCEPT CHALLENGE →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
-
