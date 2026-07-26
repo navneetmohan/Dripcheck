@@ -138,28 +138,3 @@ curl -X POST http://localhost:8000/analyze \
 5. Backend generates a witty "Roast or Toast" verdict
 6. Meme generator creates a shareable image with all the results
 7. Frontend displays the results with animations
-
-## Troubleshooting
-
-### "GEMINI_API_KEY environment variable not set"
-Make sure you've created a `.env` file in the backend directory with your API key.
-
-### CORS Errors
-The backend is configured to accept requests from all origins (`*`). If you encounter CORS issues, check that the backend is running correctly.
-
-### Image Upload Fails
-- Make sure the image is JPEG or PNG
-- Image must be less than 10MB
-
-## License
-
-MIT License
-
----
-
-Made with 🔥 by Roast or Toast
-
-=======
-# Dripcheck
-Hackathon project
->>>>>>> 390df14c5e0312d1a81198b293a2afa2e368f166
