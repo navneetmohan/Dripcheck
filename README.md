@@ -1,16 +1,15 @@
-<<<<<<< HEAD
-# Roast or Toast 🔥
+# Roast or Toast 🔥🔥🔥
 
 An AI-powered outfit analyzer that tells you whether your fit is fire or needs to go back to the drawing room.
 
 ## Features
 
-- 📸 **Upload your outfit photo** - Support for JPEG and PNG images
-- 🤖 **AI-Powered Analysis** - Uses Google Gemini Vision API to analyze your outfit
-- 📊 **Drip Score** - Get a score from 0-100 on how fresh your fit is
-- 👗 **Style Archetype** - Discover your style identity (Streetwear King, Preppy Prince, etc.)
-- 🔥 **Roast or Toast** - Get brutally honest feedback
-- 📱 **Shareable Memes** - Generate and download a meme card to share
+- **Upload your outfit photo** - Support for JPEG and PNG images
+- **AI-Powered Analysis** - Uses Google Gemini Vision API to analyze your outfit
+- **Drip Score** - Get a score from 0-100 on how fresh your fit is
+- **Style Archetype** - Discover your style identity (Streetwear King, Preppy Prince, etc.)
+- **Roast or Toast** - Get brutally honest feedback
+- **Shareable Memes** - Generate and download a meme card to share
 
 ## Tech Stack
 
